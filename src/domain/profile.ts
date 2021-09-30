@@ -6,7 +6,7 @@ export interface Contact {
   address?: string;
 }
 
-export default class Profile {
+export class Profile {
   public services: string[] = [];
   public responsibleForValidation = '';
   private _dayOfSecondShot: Date | null = null;
