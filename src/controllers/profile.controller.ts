@@ -30,7 +30,7 @@ export class ProfileController {
   }
 
   private mapRoutes() {
-    this._router.post('/pre-register', this.preRegister.bind(this));
+    this._router.post('/', this.preRegister.bind(this));
   }
 
   public get router(): Router {
