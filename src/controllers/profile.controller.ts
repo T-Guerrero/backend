@@ -1,10 +1,17 @@
+import { Request, Response, Router, json } from 'express';
+
+import { IProfileDataPort } from 'domain/ports/profileDataPort';
 import { InvalidSecondShotDateError } from 'domain/exceptions/InvalidSecondShotDateError';
+import { Profile } from 'domain/profile';
 import ProfileUseCases from 'domain/profileUseCases';
-import { Router, Response, Request, json } from 'express';
+import { TextSearchableQuery } from 'common/pagedQuery';
 
 export class ProfileController {
   private _router: Router;
-  constructor(protected readonly profileUseCases: ProfileUseCases) {
+  constructor(
+    protected readonly profileUseCases: ProfileUseCases,
+    protected readonly profileDataPort: IProfileDataPort
+  ) {
     this._router = Router();
     this.mapRoutes();
   }
@@ -29,8 +36,31 @@ export class ProfileController {
     }
   }
 
+  private async getProfile(req: Request, res: Response) {
+    try {
+      const { skip: _skip, take: _take, q: _q } = req.query;
+
+      const parseIntFromQuery = (value: any) => !!value && parseInt(value);
+
+      const q = _q + '';
+      const skip = parseIntFromQuery(_skip) || 0;
+      const take = Math.min(parseIntFromQuery(_take) || 10, 50);
+
+      const result = (await this.profileDataPort.findByText({
+        q,
+        skip,
+        take,
+      })) as TextSearchableQuery<Profile>;
+      res.json(result);
+    } catch (e) {
+      console.error(e);
+      res.status(500).send();
+    }
+  }
+
   private mapRoutes() {
     this._router.post('/', this.preRegister.bind(this));
+    this._router.get('/', this.getProfile.bind(this));
   }
 
   public get router(): Router {

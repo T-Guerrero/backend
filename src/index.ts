@@ -1,6 +1,8 @@
-import express, { Application, Request, Response, json } from 'express';
-import { ProfileController } from 'controllers/profile.controller';
+import express, { Application, json } from 'express';
+
 import { IProfileDataPort } from 'domain/ports/profileDataPort';
+import { Profile } from 'domain/profile';
+import { ProfileController } from 'controllers/profile.controller';
 import ProfileUseCases from 'domain/profileUseCases';
 import cors from 'cors';
 
@@ -13,18 +15,22 @@ const port: IProfileDataPort = {
     console.log('saved ', p);
     return p;
   },
+  findByText: async ({ q, skip, take }) => {
+    return {
+      data: [{ name: 'Fulaninho' } as Profile],
+      q,
+      skip,
+      take,
+    };
+  },
 };
 
 const profileUseCases = new ProfileUseCases(port);
 
-const controller = new ProfileController(profileUseCases);
+const controller = new ProfileController(profileUseCases, port);
 
 app.use('/profile', controller.router);
 
 app.listen(3000, () => {
-  console.log('Server Running on 3000!');
-});
-
-app.use('/', (req: Request, res: Response) => {
-  res.status(200).send({ data: 'Hello, world!' });
+  console.log('Server Running on 3000!!');
 });
