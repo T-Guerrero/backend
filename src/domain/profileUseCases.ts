@@ -1,5 +1,6 @@
-import { IProfileDataPort } from './ports/profileDataPort';
 import { Contact, Profile } from './profile';
+
+import { IProfileDataPort } from './ports/profileDataPort';
 
 export interface PreRegistrationData {
   name: string;
