@@ -10,6 +10,7 @@ export class Profile {
   public services: string[] = [];
   public responsibleForValidation = '';
   private _dayOfSecondShot: Date | null = null;
+  private _roles: string[] = [];
 
   constructor(
     public name: string,
@@ -43,5 +44,13 @@ export class Profile {
 
   public get dayOfSecondShot(): Date | null {
     return this._dayOfSecondShot;
+  }
+
+  public addRole(role: string): void {
+    this._roles.push(role);
+  }
+
+  public get roles(): string[] {
+    return this._roles;
   }
 }
