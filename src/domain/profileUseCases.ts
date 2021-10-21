@@ -1,3 +1,4 @@
+import { Authorizer } from './Authorizer';
 import { IProfileDataPort } from './ports/profileDataPort';
 import { Contact, Profile } from './profile';
 
@@ -11,6 +12,7 @@ export interface PreRegistrationData {
 export default class ProfileUseCases {
   constructor(private readonly profileDataPort: IProfileDataPort) {}
 
+  @Authorizer.allow(['user'])
   public performPreRegistration({
     name,
     cpf,
